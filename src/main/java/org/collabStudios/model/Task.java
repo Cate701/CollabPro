@@ -2,6 +2,7 @@ package org.collabStudios.model;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.ArrayList;
 import java.time.LocalDateTime;

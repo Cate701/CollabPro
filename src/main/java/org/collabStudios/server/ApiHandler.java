@@ -9,7 +9,7 @@ import org.collabStudios.model.Workspace;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
+import java.util.*;
 
 public class ApiHandler implements HttpHandler {
 
@@ -31,6 +31,9 @@ public class ApiHandler implements HttpHandler {
             if (exchange.getRequestURI().getPath().equals("/api/makeTask")) {
                 createNewTask(exchange);
             }
+            else if (exchange.getRequestURI().getPath().equals("/api/makeUser")) {
+                createNewUser(exchange);
+            }
         }
     }
 
@@ -47,7 +50,57 @@ public class ApiHandler implements HttpHandler {
     }
 
     private void createNewTask(HttpExchange exchange) {
+        String queryInfo = exchange.getRequestURI().getQuery(); //exclude question mark
+        //Format: name="name"&date="date"&DesiredSkill="a,b,c,d,e,..."
+        String[] info = queryInfo.split("&");
 
+        //get name
+        String[] nameInfo = info[0].split("\"");
+        String name = nameInfo[1];
+
+        //get date
+        String[] dateInfo = info[1].split("\"");
+        String date = dateInfo[1];
+
+        //get skill hashMap
+        String[] skillLevels = info[2].split("\"")[1].split(",");
+        List<String> skillNames = workspace.getSkills();
+        Dictionary<String, Integer> desiredSkills = new Hashtable<>();
+        for (int i = 0; i < skillNames.size(); i++) {
+            String currSkill = skillNames.get(i);
+            int currLevel = Integer.parseInt(skillLevels[i]);
+            desiredSkills.put(currSkill, currLevel);
+        }
+
+        Task newTask = new Task(name, desiredSkills, date, workspace);
+        workspace.addTasks(newTask);
+    }
+
+    public void createNewUser(HttpExchange exchange) {
+        String queryInfo = exchange.getRequestURI().getQuery(); //exclude question mark
+        //Format: name="name"&skillLevels="a,b,c,d,e,..."&title="title"
+        String[] info = queryInfo.split("&");
+
+        //get name info
+        String[] nameInfo = info[0].split("\"");
+        String name = nameInfo[1];
+
+        //get skill hashMap
+        String[] skillLevels = info[1].split("\"")[1].split(",");
+        List<String> skillNames = workspace.getSkills();
+        HashMap<String, Integer> skillLevelsDict = new HashMap<>();
+        for (int i = 0; i < skillNames.size(); i++) {
+            String currSkill = skillNames.get(i);
+            int currLevel = Integer.parseInt(skillLevels[i]);
+            skillLevelsDict.put(currSkill, currLevel);
+        }
+
+        //get title
+        String[] titleInfo = info[2].split("\"");
+        String title = titleInfo[1];
+
+        User user = new User(name, title, true, skillLevelsDict, new ArrayList<>());
+        workspace.addUser(user);
     }
 
     private void getTaskList(HttpExchange exchange) throws IOException {
