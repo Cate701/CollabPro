@@ -1,57 +1,73 @@
 package org.collabStudios.model;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 
 public class Task {
 
+    private int id;
+
     //Project name
-    String name;
+    private String name;
+
+    private Workspace workspace;
 
     //list of users assigned to this project
-    ArrayList<User> assignedUsers;
+    private ArrayList<User> assignedUsers;
 
     //timespan of project
     //if set to -1, no hour estimate has been given
-    int hours;
+    private int hours;
 
     //Date project must be done by
-    LocalDateTime dueDate;
+    private LocalDateTime dueDate;
 
     //dictionary of desired skill level
-    Dictionary<String, Integer> desiredSkillLevel;
+    private Dictionary<String, Integer> desiredSkillLevel;
 
     //dictionary of REAL skill level
-    Dictionary<String, Integer> realSkillLevel;
+    private Dictionary<String, Integer> realSkillLevel;
 
-    public Task(String name, Dictionary<String, Integer> desiredSkillLevel, int hours) {
+    public Task(String name, Dictionary<String, Integer> desiredSkillLevel, int hours, Workspace workspace) {
         this.name = name;
         this.desiredSkillLevel = desiredSkillLevel;
         this.hours = hours;
         this.dueDate = null;
-        this.assignedUsers = new ArrayList<>();
         this.realSkillLevel = new Hashtable<>();
+        this.workspace = workspace;
+        autoAssignUsers();
     }
 
-    public Task(String name, Dictionary<String, Integer> desiredSkillLevel, int hours, LocalDateTime dueDate) {
+    public Task(int id, String name, Dictionary<String, Integer> desiredSkillLevel, int hours, LocalDateTime dueDate) {
+        this.id = id;
         this.name = name;
         this.desiredSkillLevel = desiredSkillLevel;
         this.hours = hours;
         this.dueDate = dueDate;
-        this.assignedUsers = new ArrayList<>();
         this.realSkillLevel = new Hashtable<>();
+        this.workspace = workspace;
+        autoAssignUsers();
     }
 
-    public Task(String name, Dictionary<String, Integer> desiredSkillLevel, LocalDateTime dueDate) {
+    public Task(String name, Dictionary<String, Integer> desiredSkillLevel, LocalDateTime dueDate, Workspace workspace) {
         this.name = name;
         this.desiredSkillLevel = desiredSkillLevel;
         this.hours = -1;
         this.dueDate = dueDate;
         this.assignedUsers = new ArrayList<>();
         this.realSkillLevel = new Hashtable<>();
+        autoAssignUsers();
+    }
+
+    public void autoAssignUsers() {
+        assignedUsers = workspace.assignTask(this);
+    }
+
+    public String getDueString() {
+        return this.dueDate.format(DateTimeFormatter.ISO_DATE_TIME);
     }
 
     public String getName() {
@@ -92,5 +108,13 @@ public class Task {
 
     public void setDesiredSkillLevel(Dictionary<String, Integer> desiredSkillLevel) {
         this.desiredSkillLevel = desiredSkillLevel;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

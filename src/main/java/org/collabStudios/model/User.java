@@ -3,6 +3,7 @@ package org.collabStudios.model;
 import java.util.*;
 
 public class User {
+    private int id;
     private String name;
     private String title;
     private boolean available;
@@ -17,14 +18,13 @@ public class User {
         this.currentTasks = currentTasks;
     }
 
-    public User(String name, String title) {
+    public User(int id, String name, String title) {
+        this.id = id;
         this.name = name;
         this.title = title;
         available = true;
         skillLevels = new HashMap<>();
     }
-
-
 
 
     public void setSkill(String skill, int newLevel) {
@@ -73,5 +73,13 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

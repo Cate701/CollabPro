@@ -17,13 +17,6 @@ public class Workspace {
         this.name = name;
     }
 
-    public ArrayList<User> createTeam(Task task) {
-
-
-
-        return null; //temp placeholder
-    }
-
     public ArrayList<User> searchNameAndSkill(String name, HashMap<String, Integer> skill) {
         ArrayList<User> nameMatches = searchName(name);
         ArrayList<User> skillMatches = searchSkills(skill);
