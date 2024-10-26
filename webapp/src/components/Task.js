@@ -11,14 +11,20 @@ export default function TaskBox() {
         return {
             taskName : serverJSON.name,
             skill : serverJSON.skill,
-            date : serverJSON.date,
+            date : serverJSON.dueDate,
         };
     }
 
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
-                const taskResponse = await fetch("https://jsonplaceholder.typicode.com/users");
+                const taskResponse = await fetch("http://localhost:8000/api/tasks", {
+                    method: "GET",
+                    mode: 'cors',
+                    headers: {
+                    'Access-Control-Allow-Origin':'*'
+                    }
+                });
                 const taskData = await taskResponse.json();
                 setTasks(taskData.map(serverJSONToTask));
 
@@ -38,13 +44,17 @@ export default function TaskBox() {
         const params = new URLSearchParams({
             name: taskName,
             dueDate: dueDate,
-            skills: skills.toString(),
+            skills: [0,0,0].toString(),
         });
 
-        const query = "https://localhost:8000/api/task?" + params.toString();
+        const query = "http://localhost:8000/api/task?" + params.toString();
 
         const taskResponse = await fetch(query, {
-            method: "POST"
+            method: "POST",
+            mode: 'cors',
+            headers: {
+              'Access-Control-Allow-Origin':'*'
+            }
         });
         const taskData = await taskResponse.json();
 

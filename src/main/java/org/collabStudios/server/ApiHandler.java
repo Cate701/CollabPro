@@ -6,6 +6,7 @@ import org.collabStudios.database.WorkspaceDBClient;
 import org.collabStudios.model.Task;
 import org.collabStudios.model.User;
 import org.collabStudios.model.Workspace;
+import org.json.JSONArray;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,25 +24,51 @@ public class ApiHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+        exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+        if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+            exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
+            exchange.sendResponseHeaders(204, -1);
+            return;
+        }
+
         if (exchange.getRequestMethod().equals("GET")) {
-            if (exchange.getRequestURI().getPath().equals("/api/userList")) {
+            if (exchange.getRequestURI().getPath().equals("/api/users")) {
                 getUserList(exchange);
+                return;
+            } else if (exchange.getRequestURI().getPath().equals("/api/tasks")) {
+                getTaskList(exchange);
+                return;
+            } else if (exchange.getRequestURI().getPath().equals("/api/skills")) {
+                getSkillList(exchange);
+                return;
             }
         } else if (exchange.getRequestMethod().equals("POST")) {
             if (exchange.getRequestURI().getPath().equals("/api/makeTask")) {
                 createNewTask(exchange);
+                return;
             }
             else if (exchange.getRequestURI().getPath().equals("/api/makeUser")) {
                 createNewUser(exchange);
+                return;
             }
         }
+
+        String response = "404 Not Found\n";
+        exchange.sendResponseHeaders(404, response.getBytes().length);
+        OutputStream os = exchange.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
     }
 
     private void getUserList(HttpExchange exchange) throws IOException {
         List<User> userList = workspace.getUsers();
 
+        JSONArray responseJSON = new JSONArray(userList);
+        String response = responseJSON.toString();
+
         // FORMAT: "User [name=" + name + ", id=" + id + ", title=" + title + ", available=" + available + ", currentTasks=" + currentTasks + ", skillLevels" + skillLevels]";
-        String response = workspace.getUsers().toString();
+//        String response = workspace.getUsers().toString();
         exchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
@@ -104,13 +131,23 @@ public class ApiHandler implements HttpHandler {
     }
 
     private void getTaskList(HttpExchange exchange) throws IOException {
+        JSONArray responseJSON = new JSONArray(workspace.getTasks());
+        String response = responseJSON.toString();
 
-        String response = workspace.getTasks().toString();
-        //format: [Task, Task, Task, ...]
         exchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
     }
 
+
+    private void getSkillList(HttpExchange exchange) throws IOException {
+        JSONArray responseJSON = new JSONArray(workspace.getSkills());
+        String response = responseJSON.toString();
+
+        exchange.sendResponseHeaders(200, response.getBytes().length);
+        OutputStream os = exchange.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
+    }
 }
