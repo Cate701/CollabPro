@@ -3,16 +3,18 @@ package org.collabStudios.model;
 import java.lang.reflect.Array;
 import java.util.*;
 public class Workspace {
+    private String name;
+    private int maxSkillLevel;
     private List<String> skills;
     private List<User> users;
     private List<Task> tasks;
-    private int maxSkillLevel;
 
-    public Workspace(List<String> skills, List<User> users, List<Task> tasks, int maxSkillLevel) {
+    public Workspace(String name, List<String> skills, List<User> users, List<Task> tasks, int maxSkillLevel) {
         this.skills = skills;
         this.users = users;
         this.tasks = tasks;
         this.maxSkillLevel = maxSkillLevel;
+        this.name = name;
     }
 
     public ArrayList<User> createTeam(Task task) {
@@ -177,5 +179,13 @@ public class Workspace {
         //maybe add code to refactor all the skill levels to be
         // proportionate to the new max level. maybe.
         this.maxSkillLevel = maxSkillLevel;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
