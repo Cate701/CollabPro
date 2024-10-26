@@ -1,5 +1,6 @@
 package org.collabStudios.model;
 
+import java.lang.reflect.Array;
 import java.util.*;
 public class Workspace {
     private List<String> skills;
@@ -18,6 +19,47 @@ public class Workspace {
 
 
         return null; //temp placeholder
+    }
+
+    public ArrayList<User> searchNameAndSkill(String name, HashMap<String, Integer> skill) {
+        ArrayList<User> nameMatches = searchName(name);
+        ArrayList<User> skillMatches = searchSkills(skill);
+        //now compare and return users that were in BOTH lists
+        ArrayList<User> results = new ArrayList<>();
+        for (User user : nameMatches) {
+            if (skillMatches.contains(user)) {
+                results.add(user);
+            }
+        }
+        return results;
+    }
+
+    public ArrayList<User> searchName(String name) {
+        name = name.toLowerCase();
+        ArrayList<User> results = new ArrayList<>();
+        for (User user : users) {
+            String userName = user.getName().toLowerCase();
+            if (userName.contains(name)) {
+                results.add(user);
+            }
+        }
+        return results;
+    }
+
+    /*  searchSkills() function will take in a HashMap of wanted skill levels
+        will return a list of users whose skill levels are at or above the desired levels
+    */
+    public ArrayList<User> searchSkills(HashMap<String, Integer> wantedSkills) {
+        //this is to avoid accidentally changing the original users Arraylist
+        ArrayList<User> results = new ArrayList<>(users);
+
+        //this loop goes through eat desired skill and removes users whose skill level is below the threshold
+        for (String skill : skills) {
+            int wantedLevel = wantedSkills.get(skill);
+            results.removeIf(user -> user.getSkill(skill) < wantedLevel);
+        }
+
+        return results;
     }
 
     public void addSkill(String newSkill) {

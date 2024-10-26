@@ -1,9 +1,6 @@
 package org.collabStudios.model;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 import java.time.LocalDateTime;
 
 public class Task {
@@ -22,36 +19,36 @@ public class Task {
     LocalDateTime dueDate;
 
     //dictionary of desired skill level
-    Dictionary<String, Integer> desiredSkillLevel;
+    HashMap<String, Integer> desiredSkillLevel;
 
     //dictionary of REAL skill level
-    Dictionary<String, Integer> realSkillLevel;
+    HashMap<String, Integer> realSkillLevel;
 
-    public Task(String name, Dictionary<String, Integer> desiredSkillLevel, int hours) {
+    public Task(String name, HashMap<String, Integer> desiredSkillLevel, int hours) {
         this.name = name;
         this.desiredSkillLevel = desiredSkillLevel;
         this.hours = hours;
         this.dueDate = null;
         this.assignedUsers = new ArrayList<>();
-        this.realSkillLevel = new Hashtable<>();
+        this.realSkillLevel = new HashMap<>();
     }
 
-    public Task(String name, Dictionary<String, Integer> desiredSkillLevel, int hours, LocalDateTime dueDate) {
+    public Task(String name, HashMap<String, Integer> desiredSkillLevel, int hours, LocalDateTime dueDate) {
         this.name = name;
         this.desiredSkillLevel = desiredSkillLevel;
         this.hours = hours;
         this.dueDate = dueDate;
         this.assignedUsers = new ArrayList<>();
-        this.realSkillLevel = new Hashtable<>();
+        this.realSkillLevel = new HashMap<>();
     }
 
-    public Task(String name, Dictionary<String, Integer> desiredSkillLevel, LocalDateTime dueDate) {
+    public Task(String name, HashMap<String, Integer> desiredSkillLevel, LocalDateTime dueDate) {
         this.name = name;
         this.desiredSkillLevel = desiredSkillLevel;
         this.hours = -1;
         this.dueDate = dueDate;
         this.assignedUsers = new ArrayList<>();
-        this.realSkillLevel = new Hashtable<>();
+        this.realSkillLevel = new HashMap<>();
     }
 
     public String getName() {
@@ -86,11 +83,20 @@ public class Task {
         this.dueDate = dueDate;
     }
 
-    public Dictionary<String, Integer> getDesiredSkillLevel() {
+    public HashMap<String, Integer> getDesiredSkillLevel() {
         return desiredSkillLevel;
     }
 
-    public void setDesiredSkillLevel(Dictionary<String, Integer> desiredSkillLevel) {
+    public void setDesiredSkillLevel(HashMap<String, Integer> desiredSkillLevel) {
         this.desiredSkillLevel = desiredSkillLevel;
     }
+
+    public List<String> getNamesOfAssignedUsers() {
+        List<String> names = new ArrayList<>();
+        for (User user : assignedUsers) {
+            names.add(user.getName());
+        }
+        return names;
+    }
+
 }
