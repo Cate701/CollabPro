@@ -66,19 +66,21 @@ public class Workspace {
     public ArrayList<User> assignTask(Task task) {
         ArrayList<User> assignedUsers = new ArrayList<>();
         int realSkillLevel = 0;
+        //essentially makes array of all keys in the hashmap. dw abt it.
         Enumeration keys = task.getDesiredSkillLevel().keys();
+        //iterates through keys
         while (keys.hasMoreElements()) {
             String skill = (String) keys.nextElement();
             int desiredLevel = task.getDesiredSkillLevel().get(skill);
             if (desiredLevel <= maxSkillLevel) {
                 User u = individualAssignment(skill, desiredLevel);
-                if (assignedUsers.indexOf(u) == -1) {
+                if (assignedUsers.contains(u)) {
                     assignedUsers.add(u);
                 }
             } else {
                 ArrayList<User> userRecs  = bigTeamAssignment(skill, desiredLevel);
                 for (User u : userRecs) {
-                    if (assignedUsers.indexOf(u) == -1) {
+                    if (assignedUsers.contains(u)) {
                         assignedUsers.add(u);
                     }
                 }
@@ -86,14 +88,15 @@ public class Workspace {
                 realSkillLevel += u.getSkill(skill);
             }
         }
+        return assignedUsers;
     }
 
     public ArrayList<User> bigTeamAssignment(String skill, int desiredLevel) {
         ArrayList<User> usersAdding = null;
         int totalLevel = 0;
         while (totalLevel < desiredLevel) {
-            int teamSkill = users.getFirst().getSkill(skill);
-            User highestSkill = users.getFirst();
+            int teamSkill = users.get(0).getSkill(skill);
+            User highestSkill = users.get(0);
             //iterate through all users, comparing their skill levels. adds high-skill users
             //until they meet skill requirement.
             for (int i = 1; i < users.size(); i ++) {
@@ -107,6 +110,9 @@ public class Workspace {
             }
             usersAdding.add(highestSkill);
             totalLevel += highestSkill.getSkill(skill);
+            if (teamSkill < desiredLevel) {
+                desiredLevel = teamSkill;
+            }
         }
         return usersAdding;
     }
