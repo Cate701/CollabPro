@@ -40,3 +40,5 @@ build/
 
 ### Project Specific ###
 db/*
+
+webapp/node_modules/*
