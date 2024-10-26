@@ -21,7 +21,7 @@ public class Task {
     private int hours;
 
     //Date project must be done by
-    private LocalDateTime dueDate;
+    private String dueDate;
 
     //dictionary of desired skill level
     private Dictionary<String, Integer> desiredSkillLevel;
@@ -37,7 +37,7 @@ public class Task {
         this.realSkillLevel = new Hashtable<>();
     }
 
-    public Task(int id, String name, Dictionary<String, Integer> desiredSkillLevel, int hours, LocalDateTime dueDate) {
+    public Task(int id, String name, Dictionary<String, Integer> desiredSkillLevel, int hours, String dueDate) {
         this.id = id;
         this.name = name;
         this.desiredSkillLevel = desiredSkillLevel;
@@ -46,17 +46,13 @@ public class Task {
         this.realSkillLevel = new Hashtable<>();
     }
 
-    public Task(String name, Dictionary<String, Integer> desiredSkillLevel, LocalDateTime dueDate, Workspace workspace) {
+    public Task(String name, Dictionary<String, Integer> desiredSkillLevel, String dueDate, Workspace workspace) {
         this.name = name;
         this.desiredSkillLevel = desiredSkillLevel;
         this.hours = -1;
         this.dueDate = dueDate;
         this.assignedUsers = new ArrayList<>();
         this.realSkillLevel = new Hashtable<>();
-    }
-
-    public String getDueString() {
-        return this.dueDate.format(DateTimeFormatter.ISO_DATE_TIME);
     }
 
     public String getName() {
@@ -83,11 +79,11 @@ public class Task {
         this.hours = hours;
     }
 
-    public LocalDateTime getDueDate() {
+    public String getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDateTime dueDate) {
+    public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
     }
 

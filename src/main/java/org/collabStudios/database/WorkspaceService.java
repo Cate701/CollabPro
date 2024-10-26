@@ -96,7 +96,7 @@ public class WorkspaceService {
                         tasksResult.getString("name"),
                         desiredSkills,
                         tasksResult.getInt("duration"),
-                        LocalDateTime.parse(tasksResult.getString("due"), DateTimeFormatter.ISO_DATE_TIME)
+                        tasksResult.getString("due")
                 );
                 newT.setAssignedUsers(new ArrayList<>());
 
