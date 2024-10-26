@@ -8,4 +8,8 @@ public class TaskService {
 
     }
 
+    static Task getTask(WorkspaceDBClient client, String id) {
+        return null;
+    }
+
 }

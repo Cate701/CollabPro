@@ -1,12 +1,14 @@
 package org.collabStudios.model;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 
 public class Task {
+
+    private int id;
 
     //Project name
     private String name;
@@ -39,7 +41,8 @@ public class Task {
         autoAssignUsers();
     }
 
-    public Task(String name, Dictionary<String, Integer> desiredSkillLevel, int hours, LocalDateTime dueDate, Workspace workspace) {
+    public Task(int id, String name, Dictionary<String, Integer> desiredSkillLevel, int hours, LocalDateTime dueDate) {
+        this.id = id;
         this.name = name;
         this.desiredSkillLevel = desiredSkillLevel;
         this.hours = hours;
@@ -61,6 +64,10 @@ public class Task {
 
     public void autoAssignUsers() {
         assignedUsers = workspace.assignTask(this);
+    }
+
+    public String getDueString() {
+        return this.dueDate.format(DateTimeFormatter.ISO_DATE_TIME);
     }
 
     public String getName() {
@@ -101,5 +108,13 @@ public class Task {
 
     public void setDesiredSkillLevel(Dictionary<String, Integer> desiredSkillLevel) {
         this.desiredSkillLevel = desiredSkillLevel;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
