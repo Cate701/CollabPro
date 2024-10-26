@@ -90,4 +90,13 @@ public class Task {
     public void setDesiredSkillLevel(HashMap<String, Integer> desiredSkillLevel) {
         this.desiredSkillLevel = desiredSkillLevel;
     }
+
+    public List<String> getNamesOfAssignedUsers() {
+        List<String> names = new ArrayList<>();
+        for (User user : assignedUsers) {
+            names.add(user.getName());
+        }
+        return names;
+    }
+
 }
