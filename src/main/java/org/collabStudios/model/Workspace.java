@@ -18,6 +18,7 @@ public class Workspace {
     public ArrayList<User> createTeam(Task task) {
 
 
+
         return null; //temp placeholder
     }
 
@@ -60,6 +61,70 @@ public class Workspace {
         }
 
         return results;
+    }
+
+    public ArrayList<User> assignTask(Task task) {
+        ArrayList<User> assignedUsers = new ArrayList<>();
+        int realSkillLevel = 0;
+        Enumeration keys = task.getDesiredSkillLevel().keys();
+        while (keys.hasMoreElements()) {
+            String skill = (String) keys.nextElement();
+            int desiredLevel = task.getDesiredSkillLevel().get(skill);
+            if (desiredLevel <= maxSkillLevel) {
+                User u = individualAssignment(skill, desiredLevel);
+                if (assignedUsers.indexOf(u) == -1) {
+                    assignedUsers.add(u);
+                }
+            } else {
+                ArrayList<User> userRecs  = bigTeamAssignment(skill, desiredLevel);
+                for (User u : userRecs) {
+                    if (assignedUsers.indexOf(u) == -1) {
+                        assignedUsers.add(u);
+                    }
+                }
+            } for (User u : assignedUsers) {
+                realSkillLevel += u.getSkill(skill);
+            }
+        }
+    }
+
+    public ArrayList<User> bigTeamAssignment(String skill, int desiredLevel) {
+        ArrayList<User> usersAdding = null;
+        int totalLevel = 0;
+        while (totalLevel < desiredLevel) {
+            int teamSkill = users.getFirst().getSkill(skill);
+            User highestSkill = users.getFirst();
+            //iterate through all users, comparing their skill levels. adds high-skill users
+            //until they meet skill requirement.
+            for (int i = 1; i < users.size(); i ++) {
+                User u = users.get(i);
+                teamSkill += u.getSkill(skill);
+                if (u.isAvailable()) {
+                    if (u.getSkill(skill) > highestSkill.getSkill(skill) && !usersAdding.contains(u)) {
+                        highestSkill = u;
+                    }
+                }
+            }
+            usersAdding.add(highestSkill);
+            totalLevel += highestSkill.getSkill(skill);
+        }
+        return usersAdding;
+    }
+
+    public User individualAssignment(String skill, int desiredLevel) {
+        User current = users.getFirst();
+        for (User u : users) {
+            if (u.isAvailable()) {
+                if (u.getSkill(skill) == desiredLevel) {
+                    return u;
+                }
+                // compares the differences between desired skill level and user skill. tries to find one closest to 0.
+                else if (Math.abs(desiredLevel - u.getSkill(skill)) < Math.abs(desiredLevel - current.getSkill(skill))) {
+                    current = u;
+                } //is this fucking correct. who knows.
+            }
+        }
+        return current;
     }
 
     public void addSkill(String newSkill) {
