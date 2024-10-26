@@ -103,6 +103,7 @@ public class Workspace {
             //until they meet skill requirement.
             for (int i = 1; i < users.size(); i ++) {
                 User u = users.get(i);
+                //adds up the full skill level of the team
                 teamSkill += u.getSkill(skill);
                 if (u.isAvailable()) {
                     if (u.getSkill(skill) > highestSkill.getSkill(skill) && !usersAdding.contains(u)) {
@@ -112,6 +113,8 @@ public class Workspace {
             }
             usersAdding.add(highestSkill);
             totalLevel += highestSkill.getSkill(skill);
+            //if the full team's skill is less than desired level, lower desired level.
+            //will add all users with skill to usersAdding.
             if (teamSkill < desiredLevel) {
                 desiredLevel = teamSkill;
             }
