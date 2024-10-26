@@ -123,7 +123,7 @@ public class Workspace {
     }
 
     public User individualAssignment(String skill, int desiredLevel) {
-        User current = users.getFirst();
+        User current = users.get(0);
         for (User u : users) {
             if (u.isAvailable()) {
                 if (u.getSkill(skill) == desiredLevel) {
