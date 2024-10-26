@@ -1,9 +1,21 @@
 package org.collabStudios;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
 import org.collabStudios.database.WorkspaceDBClient;
 import org.collabStudios.database.WorkspaceService;
 import org.collabStudios.model.Workspace;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+import org.collabStudios.server.ApiHandler;
+import org.collabStudios.server.SiteHandler;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.security.URIParameter;
 import java.util.List;
 
 public class Main {
@@ -30,9 +42,14 @@ public class Main {
         System.out.println(ws.getTasks().get(0).getAssignedUsers().get(0).getName());
     }
 
-    public static void main(String[] args) {
-        // sqlTestCreate();
-        sqlTestRead();
-    }
+    public static void main(String[] args) throws IOException {
+        HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
+        server.createContext("/", new SiteHandler());
+        server.createContext("/api/", new ApiHandler());
 
+        server.setExecutor(null);
+        server.start();
+
+        System.out.println("Server started on port 8000");
+    }
 }

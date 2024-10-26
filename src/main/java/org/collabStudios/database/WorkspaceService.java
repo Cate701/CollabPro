@@ -98,6 +98,7 @@ public class WorkspaceService {
                         tasksResult.getInt("duration"),
                         LocalDateTime.parse(tasksResult.getString("due"), DateTimeFormatter.ISO_DATE_TIME)
                 );
+                newT.setAssignedUsers(new ArrayList<>());
 
                 Statement assignmentsStmt = conn.createStatement();
                 ResultSet assignmentsResult =

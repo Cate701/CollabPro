@@ -13,8 +13,6 @@ public class Task {
     //Project name
     private String name;
 
-    private Workspace workspace;
-
     //list of users assigned to this project
     private ArrayList<User> assignedUsers;
 
@@ -37,8 +35,6 @@ public class Task {
         this.hours = hours;
         this.dueDate = null;
         this.realSkillLevel = new Hashtable<>();
-        this.workspace = workspace;
-        autoAssignUsers();
     }
 
     public Task(int id, String name, Dictionary<String, Integer> desiredSkillLevel, int hours, LocalDateTime dueDate) {
@@ -48,8 +44,6 @@ public class Task {
         this.hours = hours;
         this.dueDate = dueDate;
         this.realSkillLevel = new Hashtable<>();
-        this.workspace = workspace;
-        autoAssignUsers();
     }
 
     public Task(String name, Dictionary<String, Integer> desiredSkillLevel, LocalDateTime dueDate, Workspace workspace) {
@@ -59,11 +53,6 @@ public class Task {
         this.dueDate = dueDate;
         this.assignedUsers = new ArrayList<>();
         this.realSkillLevel = new Hashtable<>();
-        autoAssignUsers();
-    }
-
-    public void autoAssignUsers() {
-        assignedUsers = workspace.assignTask(this);
     }
 
     public String getDueString() {
