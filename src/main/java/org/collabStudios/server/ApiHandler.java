@@ -24,11 +24,17 @@ public class ApiHandler implements HttpHandler {
                 getUserList(exchange);
             }
         } else if (exchange.getRequestMethod().equals("POST")) {
-
+            if (exchange.getRequestURI().getPath().equals("/api/makeTask")) {
+                createNewTask(exchange);
+            }
         }
     }
 
     private  void getUserList(HttpExchange exchange) {
+
+    }
+
+    private void createNewTask(HttpExchange exchange) {
 
     }
 
