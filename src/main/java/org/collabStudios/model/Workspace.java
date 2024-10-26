@@ -1,5 +1,6 @@
 package org.collabStudios.model;
 
+import java.lang.reflect.Array;
 import java.util.*;
 public class Workspace {
     private List<String> skills;
@@ -20,6 +21,18 @@ public class Workspace {
         return null; //temp placeholder
     }
 
+    public ArrayList<User> searchNameAndSkill(String name, HashMap<String, Integer> skill) {
+        ArrayList<User> nameMatches = searchName(name);
+        ArrayList<User> skillMatches = searchSkills(skill);
+        //now compare and return users that were in BOTH lists
+        ArrayList<User> results = new ArrayList<>();
+        for (User user : nameMatches) {
+            if (skillMatches.contains(user)) {
+                results.add(user);
+            }
+        }
+        return results;
+    }
 
     public ArrayList<User> searchName(String name) {
         name = name.toLowerCase();
