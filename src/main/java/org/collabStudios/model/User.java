@@ -1,17 +1,15 @@
 package org.collabStudios.model;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 public class User {
     private String name;
     private String title;
     private boolean available;
-    private Dictionary<String, Integer> skillLevels;
+    private HashMap<String, Integer> skillLevels;
     private List<Task> currentTasks;
 
-    public User(String name, String title, boolean available, Dictionary<String, Integer> skillLevels, List<Task> currentTasks) {
+    public User(String name, String title, boolean available, HashMap<String, Integer> skillLevels, List<Task> currentTasks) {
         this.name = name;
         this.title = title;
         this.available = available;
@@ -23,14 +21,17 @@ public class User {
         this.name = name;
         this.title = title;
         available = true;
-        skillLevels = new Hashtable<>();
+        skillLevels = new HashMap<>();
     }
+
+
+
 
     public void setSkill(String skill, int newLevel) {
         skillLevels.put(skill, newLevel);
     }
 
-    public int getSkill(String skill, int newLevel) {
+    public int getSkill(String skill) {
         return skillLevels.get(skill);
     }
 
@@ -42,11 +43,11 @@ public class User {
         this.currentTasks = currentTasks;
     }
 
-    public Dictionary<String, Integer> getAllSkillLevels() {
+    public HashMap<String, Integer> getAllSkillLevels() {
         return skillLevels;
     }
 
-    public void setAllSkillLevels(Dictionary<String, Integer> skillLevels) {
+    public void setAllSkillLevels(HashMap<String, Integer> skillLevels) {
         this.skillLevels = skillLevels;
     }
 
