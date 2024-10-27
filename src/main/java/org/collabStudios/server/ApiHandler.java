@@ -73,10 +73,16 @@ public class ApiHandler implements HttpHandler {
         os.close();
     }
 
-    public void completeTask(HttpExchange exchange) {
+    public void completeTask(HttpExchange exchange) throws IOException {
         String request = exchange.getRequestURI().getQuery();
         String[] requestInfo = request.split("&");
-       workspace.setTaskCompletion(Integer.parseInt(requestInfo[0]), Boolean.getBoolean(requestInfo[1]));
+        workspace.setTaskCompletion(Integer.parseInt(requestInfo[0]), Boolean.parseBoolean(requestInfo[1]));
+
+        String response = Boolean.toString(Boolean.parseBoolean(requestInfo[1]));
+        exchange.sendResponseHeaders(200, response.getBytes().length);
+        OutputStream os = exchange.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
     }
 
     public void addNewSkill(HttpExchange exchange) throws IOException{
@@ -129,7 +135,7 @@ public class ApiHandler implements HttpHandler {
         }
 
         Task newTask = new Task(name, desiredSkills, date, workspace);
-        newTask.setAssignedUsers(workspace.assignTeamComplex(newTask));
+        newTask.setAssignedUsers(workspace.assignTask(newTask));
         workspace.addTasks(newTask);
 
         JSONObject responseJSON = new JSONObject(newTask);

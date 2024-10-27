@@ -51,6 +51,11 @@ public class Workspace {
 
     public void setTaskCompletion(int id, boolean completed) {
         Task task = getTask(id);
+
+        for (User u: task.getAssignedUsers()) {
+            u.setAvailable(true);
+        }
+
         task.setCompleted(completed);
     }
 

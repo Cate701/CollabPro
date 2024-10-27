@@ -104,6 +104,11 @@ button:hover {
   margin-left:20px;
 }
 
+.show-all {
+  margin-left:20px;
+  margin-bottom: 10px;
+}
+
 .task-box {
   background-color: #fff;
   border: 1px solid #ddd;

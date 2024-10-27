@@ -1,20 +1,31 @@
 import React, { useState, useEffect } from "react";
 
 export default function TaskBox() {
+    const notCompleted = function (task){
+        return !task.completed ? task : null;
+    }
+    const alwaysGo = function(task) {
+        return task;
+    }
+
     const [tasks, setTasks] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [taskName, setTaskName] = useState("");
     const [skills, setSkills] = useState([]);
     const [dueDate, setDueDate] = useState("");
     const [availableSkills, setAvailableSkills] = useState([]);
-    
+    const [taskPredicate, setTaskPredicate] = useState(() => x => notCompleted(x));
+    const [showingAll, setShowingAll] = useState(false);
+
     const serverJSONToTask = function (serverJSON) {
         return {
+            id: serverJSON.id,
             taskName : serverJSON.name,
             skill : serverJSON.skill,
             dueDate : serverJSON.dueDate,
             memberNames : serverJSON.assignedUsers.map(u => u.name),
-            skills: serverJSON.desiredSkillLevel
+            skills: serverJSON.desiredSkillLevel,
+            completed: serverJSON.completed
         };
     }
 
@@ -73,26 +84,63 @@ export default function TaskBox() {
         closeModal();
     }
 
+    async function updateCompleted(taskId, completed) {
+        const query = "http://localhost:8000/api/complete?" + taskId.toString() + '&' + completed.toString();
+        const taskResponse = await fetch(query, {
+            method: "POST",
+            mode: 'cors',
+            headers: {
+              'Access-Control-Allow-Origin':'*'
+            }
+        });
+        const taskData = await taskResponse.json();
+    }
+
     return (
         <main>
             <div className="title">Tasks</div>
             <div className="container">
+                <div className="show-all">
+                    <span>Show all tasks: </span>
+                    <input type="checkbox" id="show-all" checked={showingAll} onChange={ (e) =>{
+                        setShowingAll(e.target.checked);
+                        console.log("C")
+                        if (e.target.checked){
+                            setTaskPredicate(() => x => alwaysGo(x));
+                            console.log("AAA")
+                        } else {
+                            setTaskPredicate(() => x => notCompleted(x));
+                            console.log("BBB")
+                        }
+                    }}/>
+                </div>
                 <div className="button-container">
                     <button className="create-button" onClick={openModal}>
                         Create New Task
                     </button>
                 </div>
+                
                 <div id="task-container">
-                    {tasks.map((task, index) => (
-                        <div className="task-box" key={index}>
+                    {tasks.map(taskPredicate).map((task, index) => {
+                        if (task != null) {
+
+return (<div className="task-box" key={index}>
                             <div className="task-header">
-                                <span>{task.taskName}</span>
+                                <span><input type="checkbox" id="vehicle" checked={tasks[index].completed} onChange={ (e) => {
+                                    updateCompleted(tasks[index].id, e.target.checked);
+                                    tasks[index].completed = e.target.checked;
+                                    setTasks([...tasks]);
+                                }}/> {task.taskName}</span>
                                 <span>{task.dueDate}</span>
                             </div>
                             <div className="members">Members: {task.memberNames.join(", ")}</div>
                             <div className="skill-headers">Skills: {Object.keys(task.skills).map(key => key + ": " + task.skills[key]).join(", ")}</div>
-                        </div>
-                    ))}
+                        </div>);}
+                        else {
+                            return null;
+                        }
+                    }
+                    )}
                 </div>
             </div>
 
