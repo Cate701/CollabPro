@@ -143,10 +143,6 @@ button:hover {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.form-group {
-  margin-bottom: 15px;
-}
-
 .form-group label {
   display: block;
   font-size: 14px;
@@ -336,4 +332,8 @@ body, html, #root {
   color: #888888;
   list-style-type: "-  ";
   margin-bottom: 0.1em;
+}
+
+.add-skill{
+
 }

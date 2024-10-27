@@ -7,6 +7,8 @@ export default function Sidebar() {
     const [newSkill, setNewSkill] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const [newTotalSkill, setTotalSkill] = useState("");
+
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
@@ -62,6 +64,28 @@ export default function Sidebar() {
         closeModal();
     };
 
+    async function handleAddSkill(){
+        const params = new URLSearchParams({
+            skill: newTotalSkill
+        });
+
+        const query = "http://localhost:8000/api/skill?" + params.toString();
+
+        const skillResponse = await fetch(query, {
+            method: "POST",
+            mode: 'cors',
+            headers: {
+              'Access-Control-Allow-Origin':'*'
+            }
+        });
+        const skillData = await skillResponse.json();
+
+        let nSkill = serverJSONToUser(skillData);
+
+        setSkills([...skills, nSkill]);
+        setTotalSkill("");
+    }
+
     return (
         <div className="sidebar">
             <div class="biglogobg">
@@ -75,6 +99,17 @@ export default function Sidebar() {
                             <label htmlFor={`skill-${index}`}>{skill}</label>
                         </div>
                     ))}
+                    <div className="form-group">
+                        <input
+                            type="text"
+                            placeholder ="Add New Skill"
+                            value={newTotalSkill}
+                            onChange={(e) => setTotalSkill(e.target.value)}
+                        />
+                        </div>
+                    <div className="add-skill">
+                        <button onClick = {handleAddSkill}>Add Skill</button>
+                    </div>
                 </div>
             </div>
             

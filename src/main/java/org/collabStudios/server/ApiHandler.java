@@ -1,7 +1,13 @@
 package org.collabStudios.server;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+
 import org.collabStudios.database.WorkspaceDBClient;
 import org.collabStudios.model.Task;
 import org.collabStudios.model.User;
@@ -9,9 +15,8 @@ import org.collabStudios.model.Workspace;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.*;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 
 public class ApiHandler implements HttpHandler {
 
@@ -74,12 +79,18 @@ public class ApiHandler implements HttpHandler {
        workspace.setTaskCompletion(Integer.parseInt(requestInfo[0]), Boolean.getBoolean(requestInfo[1]));
     }
 
-    public void addNewSkill(HttpExchange exchange) {
+    public void addNewSkill(HttpExchange exchange) throws IOException{
         String request = exchange.getRequestURI().getQuery();
         //Format: skill="skill"
 
-        String[] skillInfo = request.split("\"");
+        String[] skillInfo = request.split("=");
         workspace.addSkill(skillInfo[1]);
+
+        String response = skillInfo[1];
+        exchange.sendResponseHeaders(200, response.getBytes().length);
+        OutputStream os = exchange.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
     }
 
     private void getUserList(HttpExchange exchange) throws IOException {
