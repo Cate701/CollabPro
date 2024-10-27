@@ -63,9 +63,10 @@ export default function Sidebar() {
 
     return (
         <div className="sidebar">
+            <div class="biglogobg">
+                <img src="/collabprologotransparent.png" class="biglogo"/>
+            </div>
             <div className="admin-panel">
-                <h1>Admin Name</h1>
-
                 <div className="skills">
                     <h4>Skills</h4>
                     {skills.map((skill, index) => (
@@ -75,6 +76,7 @@ export default function Sidebar() {
                     ))}
                 </div>
             </div>
+            
 
             <div className="team-list">
                 <h4>Team List</h4>
@@ -125,6 +127,10 @@ export default function Sidebar() {
                         </div>
                     </div>
                 )}
+            </div>
+
+            <div className="admin-view-disclosure">
+                <p>Admin View</p>
             </div>
         </div>
     );

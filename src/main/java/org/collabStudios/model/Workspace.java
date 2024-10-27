@@ -73,12 +73,12 @@ public class Workspace {
                     assignedUsers.add(u);
                 }
             } else {
-                ArrayList<User> userRecs  = bigTeamAssignment(skill, desiredLevel);
-                for (User u : userRecs) {
-                    if (!assignedUsers.contains(u)) {
-                        assignedUsers.add(u);
-                    }
-                }
+//                ArrayList<User> userRecs  = bigTeamAssignment(skill, desiredLevel);
+//                for (User u : userRecs) {
+//                    if (!assignedUsers.contains(u)) {
+//                        assignedUsers.add(u);
+//                    }
+//                }
             }
             for (User u : assignedUsers) {
                 realSkillLevel += u.getSkill(skill);
