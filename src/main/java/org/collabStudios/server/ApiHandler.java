@@ -98,7 +98,7 @@ public class ApiHandler implements HttpHandler {
         }
 
         Task newTask = new Task(name, desiredSkills, date, workspace);
-        newTask.setAssignedUsers(workspace.assignTask(newTask));
+        newTask.setAssignedUsers(workspace.assignTeamComplex(newTask));
         workspace.addTasks(newTask);
 
         JSONObject responseJSON = new JSONObject(newTask);

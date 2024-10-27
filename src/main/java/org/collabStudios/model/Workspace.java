@@ -220,6 +220,12 @@ public class Workspace {
 
     public void addSkill(String newSkill) {
         skills.add(newSkill);
+        for (User user : users) {
+            user.addSkill(newSkill);
+        }
+        for (Task task : tasks) {
+            task.addSkill(newSkill);
+        }
     }
 
     public void addUser(User newUser) {

@@ -27,6 +27,10 @@ public class User {
     }
 
 
+    public void addSkill(String skill) {
+        skillLevels.put(skill, 0);
+    }
+
     public void setSkill(String skill, int newLevel) {
         skillLevels.put(skill, newLevel);
     }
