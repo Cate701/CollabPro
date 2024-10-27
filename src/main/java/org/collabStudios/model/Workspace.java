@@ -67,9 +67,9 @@ public class Workspace {
         while (keys.hasMoreElements()) {
             String skill = (String) keys.nextElement();
             int desiredLevel = task.getDesiredSkillLevel().get(skill);
-            if (desiredLevel <= maxSkillLevel) {
+            if (desiredLevel > 0 && desiredLevel <= maxSkillLevel) {
                 User u = individualAssignment(skill, desiredLevel);
-                if (!assignedUsers.contains(u)) {
+                if (u != null && !assignedUsers.contains(u)) {
                     assignedUsers.add(u);
                 }
             } else {
@@ -79,10 +79,16 @@ public class Workspace {
                         assignedUsers.add(u);
                     }
                 }
-            } for (User u : assignedUsers) {
+            }
+            for (User u : assignedUsers) {
                 realSkillLevel += u.getSkill(skill);
             }
         }
+
+        for (User u : assignedUsers) {
+            u.setAvailable(false);
+        }
+
         return assignedUsers;
     }
 
@@ -128,7 +134,7 @@ public class Workspace {
                 } //is this fucking correct. who knows.
             }
         }
-        return current;
+        return current.isAvailable() ? current : null;
     }
 
     public void addSkill(String newSkill) {

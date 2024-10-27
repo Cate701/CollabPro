@@ -111,6 +111,7 @@ public class ApiHandler implements HttpHandler {
     }
 
     public void createNewUser(HttpExchange exchange) throws IOException {
+        System.out.println(exchange.getRequestURI().getQuery());
         String queryInfo = exchange.getRequestURI().getQuery(); //exclude question mark
         //Format: name="name"&skillLevels="a,b,c,d,e,..."&title="title"
         String[] info = queryInfo.split("&");
@@ -130,7 +131,7 @@ public class ApiHandler implements HttpHandler {
         }
 
         //get title
-        String[] titleInfo = info[2].split("\"");
+        String[] titleInfo = info[2].split("=");
         String title = titleInfo[1];
 
         User user = new User(name, title, true, skillLevelsDict, new ArrayList<>());
