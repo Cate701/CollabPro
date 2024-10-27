@@ -1,13 +1,28 @@
 import './style.css';
 import TaskBox from "./components/Task"
 import Sidebar from "./components/Sidebar"
-import React from "react"
+import Intro from "./components/Intro"
+import React, {useState} from "react"
 
-export default function App() {
+const App = () => {
+  const [showIntro, setShowIntro] = useState(true);
+
+  const handleEnter = () => {
+    setShowIntro(false);
+  };
+
   return (
-      <div className="container-flex">
-        <Sidebar />
-        <TaskBox />
-      </div>
-  )
-}
+    <div className="App">
+      {showIntro ? (
+        <Intro onEnter={handleEnter} />
+      ) : (
+        <div className="container-flex">
+          <Sidebar />
+          <TaskBox />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default App;
