@@ -84,7 +84,7 @@ public class ApiHandler implements HttpHandler {
         String name = nameInfo[1];
 
         //get date
-        String[] dateInfo = info[1].split("");
+        String[] dateInfo = info[1].split("=");
         String date = dateInfo[1];
 
         //get skill hashMap
