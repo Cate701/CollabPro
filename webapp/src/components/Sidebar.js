@@ -5,6 +5,16 @@ export default function Sidebar() {
     const [skills, setSkills] = useState([]);
     const [newMember, setNewMember] = useState("");
     const [newSkill, setNewSkill] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+
+    const serverJSONToUser = function (serverJSON) {
+        return {
+            newMember : serverJSON.name,
+        };
+    }
 
     useEffect(() => {
         const fetchInitialData = async () => {
@@ -24,11 +34,30 @@ export default function Sidebar() {
         fetchInitialData();
     }, []);
 
-    const handleAddMember = () => {
-        if (newMember.trim()) {
-            setTeamMembers([...teamMembers, newMember]);
-            setNewMember("");
-        }
+    async function handleAddMember(){
+        const params = new URLSearchParams({
+            name: newMember,
+            skills: [0, 0, 0].toString(),
+            title: "bs"
+        });
+
+        const query = "http://localhost:8000/api/user?" + params.toString();
+
+        const userResponse = await fetch(query, {
+            method: "POST",
+            mode: 'cors',
+            headers: {
+              'Access-Control-Allow-Origin':'*'
+            }
+        });
+        const userData = await userResponse.json();
+
+        let newUser = userData.name;
+
+        setTeamMembers([...teamMembers, newUser]);
+        setNewMember("");
+
+        closeModal();
     };
 
     const handleAddSkill = () => {
@@ -76,8 +105,29 @@ export default function Sidebar() {
                         value={newMember}
                         onChange={(e) => setNewMember(e.target.value)}
                     />
-                    <button onClick={handleAddMember}>Add Team Member</button>
+                    <button onClick={openModal}>Add Team Member</button>
+                    
                 </div>
+
+                {isModalOpen && (
+                    <div className="modal-overlay">
+                        <div className="modal">
+                            <h2>Add New Team Member</h2>
+                            <div className="form-group">
+                                <label>Member Name</label>
+                                <input
+                                    type="text"
+                                    value={newMember}
+                                    onChange={(e) => setNewMember(e.target.value)}
+                                />
+                            </div>
+                            <div className="modal-buttons">
+                                <button onClick={handleAddMember}>Add Member</button>
+                                <button onClick={closeModal}>Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
