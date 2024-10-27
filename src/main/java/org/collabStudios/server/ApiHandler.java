@@ -53,6 +53,9 @@ public class ApiHandler implements HttpHandler {
                 createNewUser(exchange);
                 return;
             }
+            else if (exchange.getRequestURI().getPath().equals("/api/skill")) {
+                addNewSkill(exchange);
+            }
         }
 
         String response = "404 Not Found\n";
@@ -60,6 +63,14 @@ public class ApiHandler implements HttpHandler {
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
+    }
+
+    public void addNewSkill(HttpExchange exchange) {
+        String request = exchange.getRequestURI().getQuery();
+        //Format: skill="skill"
+
+        String[] skillInfo = request.split("\"");
+        workspace.addSkill(skillInfo[1]);
     }
 
     private void getUserList(HttpExchange exchange) throws IOException {

@@ -30,12 +30,16 @@ public class Task {
     //dictionary of REAL skill level
     private Dictionary<String, Integer> realSkillLevel;
 
+    //boolean for whether or not a task is completed
+    boolean completed;
+
     public Task(String name, Dictionary<String, Integer> desiredSkillLevel, int hours, Workspace workspace) {
         this.name = name;
         this.desiredSkillLevel = desiredSkillLevel;
         this.hours = hours;
         this.dueDate = null;
         this.realSkillLevel = new Hashtable<>();
+        completed = false;
     }
 
     public Task(int id, String name, Dictionary<String, Integer> desiredSkillLevel, int hours, String dueDate) {
@@ -45,6 +49,7 @@ public class Task {
         this.hours = hours;
         this.dueDate = dueDate;
         this.realSkillLevel = new Hashtable<>();
+        completed = false;
     }
 
     public Task(String name, Dictionary<String, Integer> desiredSkillLevel, String dueDate, Workspace workspace) {
@@ -54,6 +59,15 @@ public class Task {
         this.dueDate = dueDate;
         this.assignedUsers = new ArrayList<>();
         this.realSkillLevel = new Hashtable<>();
+        completed = false;
+    }
+
+    public void completeTask() {
+        completed = true;
+    }
+
+    public boolean getCompleted() {
+        return completed;
     }
 
     public void addSkill(String skill) {
