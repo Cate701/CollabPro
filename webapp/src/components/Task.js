@@ -4,10 +4,10 @@ export default function TaskBox() {
     const [tasks, setTasks] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [taskName, setTaskName] = useState("");
-    const [skills, setSkills] = useState("");
+    const [skills, setSkills] = useState([]);
     const [dueDate, setDueDate] = useState("");
-    const availableSkills = ["JavaScript", "HTML", "CSS", "Python"];
-
+    const [availableSkills, setAvailableSkills] = useState([]);
+    
     const serverJSONToTask = function (serverJSON) {
         return {
             taskName : serverJSON.name,
@@ -21,6 +21,7 @@ export default function TaskBox() {
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
+                const skFetch = await fetch("http://localhost:8000/api/skills");
                 const taskResponse = await fetch("http://localhost:8000/api/tasks", {
                     method: "GET",
                     mode: 'cors',
@@ -29,6 +30,10 @@ export default function TaskBox() {
                     }
                 });
                 const taskData = await taskResponse.json();
+                const skData = await skFetch.json();
+                setAvailableSkills(skData);
+                setSkills(skData.map(s => 0));
+
                 setTasks(taskData.map(serverJSONToTask));
 
             } catch (error) {
@@ -47,7 +52,7 @@ export default function TaskBox() {
         const params = new URLSearchParams({
             name: taskName,
             dueDate: dueDate,
-            skills: [0,0,0].toString(),
+            skills: skills.toString(),
         });
 
         const query = "http://localhost:8000/api/task?" + params.toString();
@@ -112,7 +117,10 @@ export default function TaskBox() {
                                     </div>
                                     <div className = "slider">
                                         <div class="slidecontainer">
-                                            <input type="range" min="0" max="5" class="slider" id="myRange" />
+                                            <input type="range" min="0" max="5" value={skills[index]} 
+                                            onChange={(e)=> {
+                                                skills[index] = e.target.value;
+                                                setSkills([...skills]);}} class="slider" id="myRange" />
                                         </div>
                                     </div>
                                 </div>
