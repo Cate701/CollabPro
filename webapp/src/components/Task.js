@@ -4,22 +4,36 @@ export default function TaskBox() {
     const [tasks, setTasks] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [taskName, setTaskName] = useState("");
-    const [skills, setSkills] = useState("");
+    const [skills, setSkills] = useState([]);
     const [dueDate, setDueDate] = useState("");
-
+    const [availableSkills, setAvailableSkills] = useState([]);
+    
     const serverJSONToTask = function (serverJSON) {
         return {
             taskName : serverJSON.name,
             skill : serverJSON.skill,
-            date : serverJSON.date,
+            dueDate : serverJSON.dueDate,
+            memberNames : serverJSON.assignedUsers.map(u => u.name),
+            skills: serverJSON.desiredSkillLevel
         };
     }
 
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
-                const taskResponse = await fetch("https://jsonplaceholder.typicode.com/users");
+                const skFetch = await fetch("http://localhost:8000/api/skills");
+                const taskResponse = await fetch("http://localhost:8000/api/tasks", {
+                    method: "GET",
+                    mode: 'cors',
+                    headers: {
+                    'Access-Control-Allow-Origin':'*'
+                    }
+                });
                 const taskData = await taskResponse.json();
+                const skData = await skFetch.json();
+                setAvailableSkills(skData);
+                setSkills(skData.map(s => 0));
+
                 setTasks(taskData.map(serverJSONToTask));
 
             } catch (error) {
@@ -41,10 +55,14 @@ export default function TaskBox() {
             skills: skills.toString(),
         });
 
-        const query = "https://localhost:8000/api/task?" + params.toString();
+        const query = "http://localhost:8000/api/task?" + params.toString();
 
         const taskResponse = await fetch(query, {
-            method: "POST"
+            method: "POST",
+            mode: 'cors',
+            headers: {
+              'Access-Control-Allow-Origin':'*'
+            }
         });
         const taskData = await taskResponse.json();
 
@@ -71,8 +89,8 @@ export default function TaskBox() {
                                 <span>{task.taskName}</span>
                                 <span>{task.dueDate}</span>
                             </div>
-                            <div className="members">Members:</div>
-                            <div className="skills">Skills: {task.skills}</div>
+                            <div className="members">Members: {task.memberNames.join(", ")}</div>
+                            <div className="skills">Skills: {Object.keys(task.skills).map(key => key + ": " + task.skills[key]).join(", ")}</div>
                         </div>
                     ))}
                 </div>
@@ -92,11 +110,22 @@ export default function TaskBox() {
                         </div>
                         <div className="form-group">
                             <label>Skills Required</label>
-                            <input
-                                type="text"
-                                value={skills}
-                                onChange={(e) => setSkills(e.target.value)}
-                            />
+                            {availableSkills.map((skill, index) => (
+                                <div className="skill-header">
+                                    <div className = "skill">
+                                        <span>{skill}</span>
+                                    </div>
+                                    <div className = "slider">
+                                        <div class="slidecontainer">
+                                            <input type="range" min="0" max="5" value={skills[index]} 
+                                            onChange={(e)=> {
+                                                skills[index] = e.target.value;
+                                                setSkills([...skills]);}} class="slider" id="myRange" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            ))}
                         </div>
                         <div className="form-group">
                             <label>Due Date</label>

@@ -69,13 +69,13 @@ public class Workspace {
             int desiredLevel = task.getDesiredSkillLevel().get(skill);
             if (desiredLevel <= maxSkillLevel) {
                 User u = individualAssignment(skill, desiredLevel);
-                if (assignedUsers.contains(u)) {
+                if (!assignedUsers.contains(u)) {
                     assignedUsers.add(u);
                 }
             } else {
                 ArrayList<User> userRecs  = bigTeamAssignment(skill, desiredLevel);
                 for (User u : userRecs) {
-                    if (assignedUsers.contains(u)) {
+                    if (!assignedUsers.contains(u)) {
                         assignedUsers.add(u);
                     }
                 }

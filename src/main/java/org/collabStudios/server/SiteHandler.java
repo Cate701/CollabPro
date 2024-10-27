@@ -24,6 +24,7 @@ public class SiteHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+        System.out.println(exchange.getRequestURI());
         URI uri = exchange.getRequestURI();
         String path = uri.getPath();
 

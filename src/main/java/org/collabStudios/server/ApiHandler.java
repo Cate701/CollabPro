@@ -6,6 +6,8 @@ import org.collabStudios.database.WorkspaceDBClient;
 import org.collabStudios.model.Task;
 import org.collabStudios.model.User;
 import org.collabStudios.model.Workspace;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,47 +25,70 @@ public class ApiHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+        exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+        if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+            exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
+            exchange.sendResponseHeaders(204, -1);
+            return;
+        }
+
         if (exchange.getRequestMethod().equals("GET")) {
-            if (exchange.getRequestURI().getPath().equals("/api/userList")) {
+            if (exchange.getRequestURI().getPath().equals("/api/users")) {
                 getUserList(exchange);
+                return;
+            } else if (exchange.getRequestURI().getPath().equals("/api/tasks")) {
+                getTaskList(exchange);
+                return;
+            } else if (exchange.getRequestURI().getPath().equals("/api/skills")) {
+                getSkillList(exchange);
+                return;
             }
         } else if (exchange.getRequestMethod().equals("POST")) {
-            if (exchange.getRequestURI().getPath().equals("/api/makeTask")) {
+            if (exchange.getRequestURI().getPath().equals("/api/task")) {
                 createNewTask(exchange);
+                return;
             }
-            else if (exchange.getRequestURI().getPath().equals("/api/makeUser")) {
+            else if (exchange.getRequestURI().getPath().equals("/api/user")) {
                 createNewUser(exchange);
+                return;
             }
         }
+
+        String response = "404 Not Found\n";
+        exchange.sendResponseHeaders(404, response.getBytes().length);
+        OutputStream os = exchange.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
     }
 
     private void getUserList(HttpExchange exchange) throws IOException {
         List<User> userList = workspace.getUsers();
 
-        // FORMAT: "User [name=" + name + ", id=" + id + ", title=" + title + ", available=" + available + ", currentTasks=" + currentTasks + ", skillLevels" + skillLevels]";
-        String response = workspace.getUsers().toString();
+        JSONArray responseJSON = new JSONArray(userList);
+        String response = responseJSON.toString();
+
         exchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
-
     }
 
-    private void createNewTask(HttpExchange exchange) {
+    private void createNewTask(HttpExchange exchange) throws IOException {
         String queryInfo = exchange.getRequestURI().getQuery(); //exclude question mark
-        //Format: name="name"&date="date"&DesiredSkill="a,b,c,d,e,..."
+//        Format: name="name"&date="date"&DesiredSkill="a,b,c,d,e,..."
         String[] info = queryInfo.split("&");
 
         //get name
-        String[] nameInfo = info[0].split("\"");
+        String[] nameInfo = info[0].split("=");
         String name = nameInfo[1];
 
         //get date
-        String[] dateInfo = info[1].split("\"");
+        String[] dateInfo = info[1].split("=");
         String date = dateInfo[1];
 
         //get skill hashMap
-        String[] skillLevels = info[2].split("\"")[1].split(",");
+        String[] skillLevels = info[2].split("=")[1].split(",");
         List<String> skillNames = workspace.getSkills();
         Dictionary<String, Integer> desiredSkills = new Hashtable<>();
         for (int i = 0; i < skillNames.size(); i++) {
@@ -75,19 +100,27 @@ public class ApiHandler implements HttpHandler {
         Task newTask = new Task(name, desiredSkills, date, workspace);
         newTask.setAssignedUsers(workspace.assignTask(newTask));
         workspace.addTasks(newTask);
+
+        JSONObject responseJSON = new JSONObject(newTask);
+        String response = responseJSON.toString();
+
+        exchange.sendResponseHeaders(200, response.getBytes().length);
+        OutputStream os = exchange.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
     }
 
-    public void createNewUser(HttpExchange exchange) {
+    public void createNewUser(HttpExchange exchange) throws IOException {
         String queryInfo = exchange.getRequestURI().getQuery(); //exclude question mark
         //Format: name="name"&skillLevels="a,b,c,d,e,..."&title="title"
         String[] info = queryInfo.split("&");
 
         //get name info
-        String[] nameInfo = info[0].split("\"");
+        String[] nameInfo = info[0].split("=");
         String name = nameInfo[1];
 
         //get skill hashMap
-        String[] skillLevels = info[1].split("\"")[1].split(",");
+        String[] skillLevels = info[1].split("=")[1].split(",");
         List<String> skillNames = workspace.getSkills();
         HashMap<String, Integer> skillLevelsDict = new HashMap<>();
         for (int i = 0; i < skillNames.size(); i++) {
@@ -102,16 +135,34 @@ public class ApiHandler implements HttpHandler {
 
         User user = new User(name, title, true, skillLevelsDict, new ArrayList<>());
         workspace.addUser(user);
-    }
 
-    private void getTaskList(HttpExchange exchange) throws IOException {
+        JSONObject responseJSON = new JSONObject(user);
+        String response = responseJSON.toString();
 
-        String response = workspace.getTasks().toString();
-        //format: [Task, Task, Task, ...]
         exchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
     }
 
+    private void getTaskList(HttpExchange exchange) throws IOException {
+        JSONArray responseJSON = new JSONArray(workspace.getTasks());
+        String response = responseJSON.toString();
+
+        exchange.sendResponseHeaders(200, response.getBytes().length);
+        OutputStream os = exchange.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
+    }
+
+
+    private void getSkillList(HttpExchange exchange) throws IOException {
+        JSONArray responseJSON = new JSONArray(workspace.getSkills());
+        String response = responseJSON.toString();
+
+        exchange.sendResponseHeaders(200, response.getBytes().length);
+        OutputStream os = exchange.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
+    }
 }
