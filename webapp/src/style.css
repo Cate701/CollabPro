@@ -170,9 +170,17 @@ button:hover {
   margin-bottom: 20px;
 }
 
+/* background-color: #28a745;
+margin-top: 10px;
+width: 100%;
+}
+
+.add-skill button:hover, .add-member button:hover {
+background-color: #218838; */
+
 .create-button {
   padding: 12px 20px;
-  background-color: #6c63ff;
+  background-color: #28a745;
   color: #fff;
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
@@ -183,7 +191,7 @@ button:hover {
 }
 
 .create-button:hover {
-  background-color: #574bff;
+  background-color: #218838;
   transform: translateY(-2px);
 }
 
@@ -223,4 +231,16 @@ body {
 .admin-view-disclosure {
   position: absolute;
   bottom: 10px;
+}
+
+.user-skill-list {
+  margin-top: 0.1em;
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+.user-skill-elem {
+  color: #888888;
+  list-style-type: "-  ";
+  margin-bottom: 0.1em;
 }

@@ -12,7 +12,8 @@ export default function Sidebar() {
 
     const serverJSONToUser = function (serverJSON) {
         return {
-            newMember : serverJSON.name,
+            name : serverJSON.name,
+            skills: serverJSON.allSkillLevels,
         };
     }
 
@@ -21,7 +22,7 @@ export default function Sidebar() {
             try {
                 const membersResponse = await fetch("http://localhost:8000/api/users");
                 const membersData = await membersResponse.json();
-                setTeamMembers(membersData.map(member => member.name));
+                setTeamMembers(membersData.map(serverJSONToUser));
 
                 const skillsResponse = await fetch("http://localhost:8000/api/skills");
                 const skillsData = await skillsResponse.json();
@@ -53,7 +54,7 @@ export default function Sidebar() {
         });
         const userData = await userResponse.json();
 
-        let newUser = userData.name;
+        let newUser = serverJSONToUser(userData);
 
         setTeamMembers([...teamMembers, newUser]);
         setNewMember("");
@@ -68,7 +69,7 @@ export default function Sidebar() {
             </div>
             <div className="admin-panel">
                 <div className="skills">
-                    <h4>Skills</h4>
+                    <h4>Team Skills</h4>
                     {skills.map((skill, index) => (
                         <div key={index}>
                             <label htmlFor={`skill-${index}`}>{skill}</label>
@@ -82,7 +83,12 @@ export default function Sidebar() {
                 <h4>Team List</h4>
                 {teamMembers.map((member, index) => (
                     <div key={index}>
-                        <label htmlFor={`member-${index}`}>{member}</label>
+                        <label htmlFor={`member-${index}`}>{member.name}</label>
+                        <ul class='user-skill-list'>
+                            {Object.keys(member.skills).map(k => (
+                                <li class='user-skill-elem'>{k}: {member.skills[k]}</li>
+                            ))}
+                        </ul>
                     </div>
                 ))}
                 <div className="add-member">
