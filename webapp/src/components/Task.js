@@ -90,7 +90,7 @@ export default function TaskBox() {
                                 <span>{task.dueDate}</span>
                             </div>
                             <div className="members">Members: {task.memberNames.join(", ")}</div>
-                            <div className="skills">Skills: {Object.keys(task.skills).map(key => key + ": " + task.skills[key]).join(", ")}</div>
+                            <div className="skill-headers">Skills: {Object.keys(task.skills).map(key => key + ": " + task.skills[key]).join(", ")}</div>
                         </div>
                     ))}
                 </div>
@@ -113,7 +113,7 @@ export default function TaskBox() {
                             {availableSkills.map((skill, index) => (
                                 <div className="skill-header">
                                     <div className = "skill">
-                                        <span>{skill}</span>
+                                        <span>{skill} - {skills[index]}</span>
                                     </div>
                                     <div className = "slider">
                                         <div class="slidecontainer">

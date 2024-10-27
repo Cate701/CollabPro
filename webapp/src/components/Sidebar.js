@@ -106,7 +106,7 @@ export default function Sidebar() {
                                 {skills.map((skill, index) => (
                                     <div className="skill-header">
                                         <div className = "skill-member">
-                                            <span>{skill}</span>
+                                            <span>{skill} - {newSkill[index]}</span>
                                         </div>
                                         <div className = "slider">
                                             <div class="slidecontainer">
