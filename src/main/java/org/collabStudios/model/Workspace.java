@@ -131,6 +131,87 @@ public class Workspace {
         return current;
     }
 
+    //Will return a list of the assigned users
+    //Will assign realSkillLevels to task manually
+    public ArrayList<User> assignTeamComplex(Task task) {
+        Dictionary<String, Integer> desiredSkills = task.getDesiredSkillLevel();
+        ArrayList<User> assignedUsers = new ArrayList<>();
+        Dictionary<String, Integer> currSkillLevels = new Hashtable<>();
+        currSkillLevels = initEmptySkills(currSkillLevels, skills); //init skill levels to zero
+        for (String skill : skills) { //for every skill
+            int neededSkill = desiredSkills.get(skill) - currSkillLevels.get(skill);
+            if (neededSkill > 0) { //if we need more skill
+                boolean needMoreSkills = true;
+                while(needMoreSkills) { //This while loop will run as long as we need more people AND more people are available
+                    User newUser; //initially null
+                    if (neededSkill > maxSkillLevel) {
+                        newUser = getUserForSkillLevel(skill, maxSkillLevel);
+                    } else {
+                        newUser = getUserForSkillLevel(skill, neededSkill);
+                    }
+                    if (newUser == null) { //if no possible user was found
+                        needMoreSkills = false;
+                    }
+                    else {
+                        assignedUsers.add(newUser); //add to assigned list
+                        currSkillLevels = updateSkillLevels(assignedUsers, currSkillLevels); //update skill levels
+                        neededSkill = desiredSkills.get(skill) - currSkillLevels.get(skill);
+                    }
+                }
+
+            }
+        }
+        task.setRealSkillLevel(currSkillLevels);
+        return assignedUsers;
+    }
+
+    //will find a user that is available AND most closely matches the given skillLevel
+    public User getUserForSkillLevel(String skill, int skillLevel) {
+        User currUser = null;
+        for (User user : users) { //preemptively assign first available user
+            if (user.isAvailable()) {
+                currUser = user;
+                break;
+            }
+        }
+        if (currUser == null) {
+            return null;
+        }
+        int currAbsDistance = Math.abs(currUser.getSkill(skill) - skillLevel);
+        for (User user : users) { //go through and find best match to skill level
+            if (currUser.getSkill(skill) == skillLevel) { //if we have perfect match, return
+                currUser.setAvailable(false);
+                return currUser;
+            }
+            else {
+                int absDistance = Math.abs(user.getSkill(skill) - skillLevel);
+                if (absDistance < currAbsDistance) {
+                    currAbsDistance = absDistance;
+                    currUser = user;
+                }
+            }
+        }
+        return currUser;
+    }
+
+    public Dictionary<String, Integer> updateSkillLevels(ArrayList<User> users, Dictionary<String, Integer> skillLevels) {
+        for (User user : users) {
+            for (String skill : skills) {
+                int newLevel = skillLevels.get(skill) + user.getSkill(skill);
+                skillLevels.put(skill, newLevel);
+            }
+        }
+        return skillLevels;
+    }
+
+    //will create dictionary of all skills with levels set to zero
+    public Dictionary<String, Integer> initEmptySkills(Dictionary<String, Integer> skillLevels, List<String> skills) {
+        for (String skill : skills) {
+            skillLevels.put(skill, 0);
+        }
+        return skillLevels;
+    }
+
     public void addSkill(String newSkill) {
         skills.add(newSkill);
     }

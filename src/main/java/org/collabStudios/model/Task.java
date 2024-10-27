@@ -56,6 +56,13 @@ public class Task {
         this.realSkillLevel = new Hashtable<>();
     }
 
+    public Dictionary<String, Integer> getRealSkillLevel() {
+        return realSkillLevel;
+    }
+
+    public void setRealSkillLevel(Dictionary<String, Integer> realSkillLevel) {
+        this.realSkillLevel = realSkillLevel;
+    }
     public String getName() {
         return name;
     }

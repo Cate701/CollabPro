@@ -73,6 +73,7 @@ public class ApiHandler implements HttpHandler {
         }
 
         Task newTask = new Task(name, desiredSkills, date, workspace);
+        newTask.setAssignedUsers(workspace.assignTask(newTask));
         workspace.addTasks(newTask);
     }
 
