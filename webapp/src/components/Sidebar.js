@@ -9,13 +9,13 @@ export default function Sidebar() {
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
-                const membersResponse = await fetch("https://jsonplaceholder.typicode.com/users");
+                const membersResponse = await fetch("http://localhost:8000/api/users");
                 const membersData = await membersResponse.json();
                 setTeamMembers(membersData.map(member => member.name));
 
-                const skillsResponse = await fetch("");
+                const skillsResponse = await fetch("http://localhost:8000/api/skills");
                 const skillsData = await skillsResponse.json();
-                setSkills(skillsData.slice(0, 5).map(skill => skill.title));
+                setSkills(skillsData);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -47,7 +47,6 @@ export default function Sidebar() {
                     <h4>Skills</h4>
                     {skills.map((skill, index) => (
                         <div key={index}>
-                            <input type="checkbox" id={`skill-${index}`} />
                             <label htmlFor={`skill-${index}`}>{skill}</label>
                         </div>
                     ))}
@@ -67,7 +66,6 @@ export default function Sidebar() {
                 <h4>Team List</h4>
                 {teamMembers.map((member, index) => (
                     <div key={index}>
-                        <input type="checkbox" id={`member-${index}`} />
                         <label htmlFor={`member-${index}`}>{member}</label>
                     </div>
                 ))}

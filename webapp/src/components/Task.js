@@ -6,12 +6,15 @@ export default function TaskBox() {
     const [taskName, setTaskName] = useState("");
     const [skills, setSkills] = useState("");
     const [dueDate, setDueDate] = useState("");
+    const availableSkills = ["JavaScript", "HTML", "CSS", "Python"];
 
     const serverJSONToTask = function (serverJSON) {
         return {
             taskName : serverJSON.name,
             skill : serverJSON.skill,
-            date : serverJSON.dueDate,
+            dueDate : serverJSON.dueDate,
+            memberNames : serverJSON.assignedUsers.map(u => u.name),
+            skills: serverJSON.desiredSkillLevel
         };
     }
 
@@ -81,8 +84,8 @@ export default function TaskBox() {
                                 <span>{task.taskName}</span>
                                 <span>{task.dueDate}</span>
                             </div>
-                            <div className="members">Members:</div>
-                            <div className="skills">Skills: {task.skills}</div>
+                            <div className="members">Members: {task.memberNames.join(", ")}</div>
+                            <div className="skills">Skills: {Object.keys(task.skills).map(key => key + ": " + task.skills[key]).join(", ")}</div>
                         </div>
                     ))}
                 </div>
@@ -102,11 +105,19 @@ export default function TaskBox() {
                         </div>
                         <div className="form-group">
                             <label>Skills Required</label>
-                            <input
-                                type="text"
-                                value={skills}
-                                onChange={(e) => setSkills(e.target.value)}
-                            />
+                            {availableSkills.map((skill, index) => (
+                                <div className="skill-header">
+                                    <div className = "skill">
+                                        <span>{skill}</span>
+                                    </div>
+                                    <div className = "slider">
+                                        <div class="slidecontainer">
+                                            <input type="range" min="0" max="5" class="slider" id="myRange" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            ))}
                         </div>
                         <div className="form-group">
                             <label>Due Date</label>
