@@ -56,6 +56,9 @@ public class ApiHandler implements HttpHandler {
             else if (exchange.getRequestURI().getPath().equals("/api/skill")) {
                 addNewSkill(exchange);
             }
+            else if (exchange.getRequestURI().getPath().equals("/api/complete")) {
+                completeTask(exchange);
+            }
         }
 
         String response = "404 Not Found\n";
@@ -63,6 +66,12 @@ public class ApiHandler implements HttpHandler {
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
+    }
+
+    public void completeTask(HttpExchange exchange) {
+        String request = exchange.getRequestURI().getQuery();
+        String[] requestInfo = request.split("&");
+       workspace.setTaskCompletion(Integer.parseInt(requestInfo[0]), Boolean.getBoolean(requestInfo[1]));
     }
 
     public void addNewSkill(HttpExchange exchange) {

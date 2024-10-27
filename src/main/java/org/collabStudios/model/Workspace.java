@@ -9,6 +9,8 @@ public class Workspace {
     private List<User> users;
     private List<Task> tasks;
 
+    int currTaskID = 101;
+
     public Workspace(String name, List<String> skills, List<User> users, List<Task> tasks, int maxSkillLevel) {
         this.skills = skills;
         this.users = users;
@@ -28,6 +30,28 @@ public class Workspace {
             }
         }
         return results;
+    }
+
+    public Task getTask(int id) {
+        for (Task task : tasks) {
+            if (task.getId() == id) {
+                return task;
+            }
+        }
+        return null;
+    }
+
+    public void incrementID() {
+        currTaskID++;
+    }
+
+    public int getCurrTaskID() {
+        return currTaskID;
+    }
+
+    public void setTaskCompletion(int id, boolean completed) {
+        Task task = getTask(id);
+        task.setCompleted(completed);
     }
 
     public ArrayList<User> searchName(String name) {

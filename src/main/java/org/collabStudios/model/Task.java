@@ -33,6 +33,8 @@ public class Task {
     //boolean for whether or not a task is completed
     boolean completed;
 
+
+
     public Task(String name, Dictionary<String, Integer> desiredSkillLevel, int hours, Workspace workspace) {
         this.name = name;
         this.desiredSkillLevel = desiredSkillLevel;
@@ -40,6 +42,8 @@ public class Task {
         this.dueDate = null;
         this.realSkillLevel = new Hashtable<>();
         completed = false;
+        id = workspace.getCurrTaskID();
+        workspace.incrementID();
     }
 
     public Task(int id, String name, Dictionary<String, Integer> desiredSkillLevel, int hours, String dueDate) {
@@ -60,10 +64,12 @@ public class Task {
         this.assignedUsers = new ArrayList<>();
         this.realSkillLevel = new Hashtable<>();
         completed = false;
+        id = workspace.getCurrTaskID();
+        workspace.incrementID();
     }
 
-    public void completeTask() {
-        completed = true;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
     public boolean getCompleted() {
