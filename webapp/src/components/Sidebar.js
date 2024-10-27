@@ -4,7 +4,7 @@ export default function Sidebar() {
     const [teamMembers, setTeamMembers] = useState([]);
     const [skills, setSkills] = useState([]);
     const [newMember, setNewMember] = useState("");
-    const [newSkill, setNewSkill] = useState("");
+    const [newSkill, setNewSkill] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = () => setIsModalOpen(true);
@@ -26,6 +26,7 @@ export default function Sidebar() {
                 const skillsResponse = await fetch("http://localhost:8000/api/skills");
                 const skillsData = await skillsResponse.json();
                 setSkills(skillsData);
+                setNewSkill(skillsData.map(s => 0));
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -37,7 +38,7 @@ export default function Sidebar() {
     async function handleAddMember(){
         const params = new URLSearchParams({
             name: newMember,
-            skills: [0, 0, 0].toString(),
+            skills: newSkill.toString(),
             title: "bs"
         });
 
@@ -60,13 +61,6 @@ export default function Sidebar() {
         closeModal();
     };
 
-    const handleAddSkill = () => {
-        if (newSkill.trim()) {
-            setSkills([...skills, newSkill]);
-            setNewSkill("");
-        }
-    };
-
     return (
         <div className="sidebar">
             <div className="admin-panel">
@@ -79,15 +73,6 @@ export default function Sidebar() {
                             <label htmlFor={`skill-${index}`}>{skill}</label>
                         </div>
                     ))}
-                    <div className="add-skill">
-                        <input
-                            type="text"
-                            placeholder="Add new skill"
-                            value={newSkill}
-                            onChange={(e) => setNewSkill(e.target.value)}
-                        />
-                        <button onClick={handleAddSkill}>Add Skill</button>
-                    </div>
                 </div>
             </div>
 
@@ -99,14 +84,7 @@ export default function Sidebar() {
                     </div>
                 ))}
                 <div className="add-member">
-                    <input
-                        type="text"
-                        placeholder="Add new member"
-                        value={newMember}
-                        onChange={(e) => setNewMember(e.target.value)}
-                    />
                     <button onClick={openModal}>Add Team Member</button>
-                    
                 </div>
 
                 {isModalOpen && (
@@ -120,6 +98,25 @@ export default function Sidebar() {
                                     value={newMember}
                                     onChange={(e) => setNewMember(e.target.value)}
                                 />
+                            </div>
+                            <div className="form-group">
+                                <label>Skills</label>
+                                {skills.map((skill, index) => (
+                                    <div className="skill-header">
+                                        <div className = "skill-member">
+                                            <span>{skill}</span>
+                                        </div>
+                                        <div className = "slider">
+                                            <div class="slidecontainer">
+                                                <input type="range" min="0" max="5" value={newSkill[index]}  
+                                                onChange={(e)=> {
+                                                    newSkill[index] = e.target.value;
+                                                    setNewSkill([...newSkill]);}} class="slider" id="myRange"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                ))}
                             </div>
                             <div className="modal-buttons">
                                 <button onClick={handleAddMember}>Add Member</button>
